@@ -6,7 +6,8 @@ const app = express();
 
 const allowedOrigins = [
   'http://localhost:3000', 
-  'https://mynewscript.vercel.app' 
+  'https://mynewscript.vercel.app',
+  'https://fleurs-7171aef9b6be.herokuapp.com' 
 ];
 
 const corsOptions = {
