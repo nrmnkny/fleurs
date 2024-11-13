@@ -45,18 +45,18 @@ exports.createPost = async (req, res) => {
 };
 
 exports.updatePost = async (req, res) => {
-    console.log("Updating post with ID:", req.params.id, "and data:", req.body);
+    console.log("Attempting to update post with ID:", req.params.id, "and data:", req.body);
 
     const { Title, Body, CategoryId } = req.body;
     if (!Title || !Body || !CategoryId) {
-        console.warn("Validation failed for post update:", req.body);
+        console.warn("Validation failed for post update. Missing fields:", req.body);
         return res.status(400).json({ message: "Title, Body, and CategoryId are required." });
     }
 
     try {
         const result = await PostModel.update(req.params.id, req.body);
         if (result === 0) {
-            console.log("Post not found for ID:", req.params.id);
+            console.log("Post not found or not updated for ID:", req.params.id);
             return res.status(404).json({ message: "Post not found" });
         }
         console.log("Post updated successfully for ID:", req.params.id);
@@ -68,9 +68,14 @@ exports.updatePost = async (req, res) => {
 };
 
 exports.deletePost = async (req, res) => {
-    console.log("Deleting post with ID:", req.params.id);
+    console.log("Attempting to delete post with ID:", req.params.id);
+
     try {
-        await PostModel.delete(req.params.id);
+        const result = await PostModel.delete(req.params.id);
+        if (result === 0) {
+            console.log("Post not found for deletion with ID:", req.params.id);
+            return res.status(404).json({ message: "Post not found" });
+        }
         console.log("Post deleted successfully for ID:", req.params.id);
         res.status(204).json({ message: 'Post deleted' });
     } catch (err) {
